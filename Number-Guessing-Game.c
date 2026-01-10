@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
-void setupGame (int *ptr , int *ptrStart , int *ptrEnd , int *ptrMultiplayerRangeOPT , int *ptrplayerNumber) ;
+void setupGame (int *ptr , int *ptrStart , int *ptrEnd , int *ptrMultiplayerRangeOPT , int *ptrplayerNumber) ; // this sets up the full game
+
+void randomNumber (int *targetNumber , int rangeStart , int rangeEnd) ; // it decides the target number
 
 int main () {
 
@@ -16,7 +20,136 @@ int main () {
 
     int playerNumber ; // saves number of player for multiplayer mode
 
+    int targetNumber ; // this stores the number which user have to guess
+
+    srand(time(0)) ; // setting the seed for selecting random number 
+
     setupGame (&mode , &rangeStart , &rangeEnd , &multiplayerRangeOPT , &playerNumber) ;
+
+    if (mode == 0) { // this is Classic Mode (Single Player) code ...
+
+        char playerName1[50] ;
+
+        printf("\n========================================\n");
+        printf("        SINGLE PLAYER - CLASSIC MODE\n");
+        printf("========================================\n\n");
+
+        printf("The computer has selected a random number\n");
+        printf("between 1 and 100.\n\n");
+
+        printf("Your goal is simple:\n");
+        printf("=> Guess the correct number\n");
+        printf("=> Get hints after every wrong attempt\n");
+        printf("=> Solve it in the LEAST number of attempts\n\n");
+
+        printf("Fewer attempts means a higher score!\n");
+        printf("Your best score will be saved automatically.\n\n");
+
+        printf("Good luck - play smart!\n");
+
+        printf("\n----------------------------------------\n");
+        printf("PLAYER SETUP\n");
+        printf("----------------------------------------\n\n");
+
+        printf("Enter your player name to begin:\n");
+        printf(">> ");
+        getchar() ; // To clear the buffer
+        fgets(playerName1 , 50 , stdin) ;
+
+        playerName1[strcspn(playerName1 , "\n")] = '\0' ; // fget c always saved \n{Enter} too , it replaces it with \0
+
+        randomNumber (&targetNumber , 1 , 100) ; // this would pick a random number between the range
+
+        printf("The Number Game Begains\n") ;
+        printf("Guess the number selected randomly 1 to 100\nDont Worry you will get hint after every wrong attempt\n") ;
+        printf("Let The Game Begain\n") ;
+
+        int guessNumber ; // this saves the users guess
+        int c = 1 ; // Number of attempts
+
+        do { // This takes input , checks if its correct guess & tracks the no of attemps too
+
+            printf("Enter Your Guess %d\n" , c) ;
+            printf(">> ");
+            scanf("%d" , &guessNumber) ;
+
+            if (guessNumber < 0 || guessNumber > 100) {
+
+                printf("\nInvalid move!\n");
+                printf("The number you entered is outside the allowed range.\n");
+                printf("Penalty applied: This mistake counts as TWO attempts!\n");
+                printf("Choose wisely - fewer attempts means a better score!\n");
+                c += 2;
+                continue ;
+
+            }
+
+            if (guessNumber > targetNumber) {
+
+                printf("\nToo high!\n");
+                printf("The number is smaller than your guess. Try a lower number.\n");
+                printf("Keep going! Fewer attempts = better score.\n");
+
+            }else if (guessNumber < targetNumber) {
+
+                printf("\nToo low!\n");
+                printf("The number is higher than your guess. Try a higher number.\n");
+                printf("You're getting closer! Fewer attempts = better score.\n");
+
+            }else if (guessNumber == targetNumber) {
+
+                printf("\n##-- Congratulations! --##\n");
+                printf("You guessed the number correctly!\n");
+                printf("It took you %d attempts.\n", c);
+                printf("Well done, champion!\n");
+
+                break ;
+
+            }
+
+            c++ ;
+
+        }while (guessNumber != targetNumber) ;
+
+        printf("\n\n##-- You guessed in %d attemps --##\n\n" , c) ;
+
+        FILE *fptr ;
+
+        fptr = fopen("HighScore.txt" , "r") ;
+
+        int a ;
+
+        fscanf(fptr , "%d" , &a) ;
+
+        fclose(fptr);
+
+        if (c < a) { // if user sets a new high score , update the high score
+
+            FILE *fptr1 ;
+
+            fptr1 = fopen("HighScore.txt" , "w") ;
+
+            fprintf(fptr1 , "%d" , c) ;
+
+            fclose(fptr1) ;
+
+            printf("\n##-- Incredible! New Best Score! --##\n");
+            printf("You guessed the number in just %d attempts!\n", c);
+            printf("%s This is your new record! Keep up the amazing work!\n" , playerName1) ;
+
+            exit(0) ; // this ends the game 
+
+        }
+
+        // if user do not set a high score
+
+        printf("\n##-- Good try! --##\n");
+        printf("You guessed the number in %d attempts.\n", c);
+        printf("%s Your Best Score remains at %d attempts. Can you beat it next time?\n", playerName1 , a) ;
+
+        exit(0) ;
+
+    }
 
     return 0 ;
 
@@ -183,6 +316,14 @@ void setupGame (int *ptr , int *ptrStart , int *ptrEnd , int *ptrMultiplayerRang
 
     }
     
+}
+
+void randomNumber (int *targetNumber , int rangeStart , int rangeEnd) {
+
+    // it generates a random number between a range
+
+    *targetNumber = (rand() % (rangeEnd - rangeStart + 1)) + rangeStart ; 
+
 }
 
 
