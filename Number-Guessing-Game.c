@@ -7,6 +7,8 @@ void setupGame (int *ptr , int *ptrStart , int *ptrEnd , int *ptrMultiplayerRang
 
 void randomNumber (int *targetNumber , int rangeStart , int rangeEnd) ; // it decides the target number
 
+int hint (int *guessNumber , int *targetNumber , int *c) ; // this give hint & warning msg
+
 int main () {
 
     int mode ; // This saves the mode user wants to play ther game 
@@ -66,6 +68,7 @@ int main () {
 
         int guessNumber ; // this saves the users guess
         int c = 1 ; // Number of attempts
+        int x ; // this a variable which will store values temperorly in the code , when ever needed
 
         do { // This takes input , checks if its correct guess & tracks the no of attemps too
 
@@ -73,41 +76,13 @@ int main () {
             printf(">> ");
             scanf("%d" , &guessNumber) ;
 
-            if (guessNumber < 0 || guessNumber > 100) {
+            x = hint (&guessNumber , &targetNumber , &c) ;
 
-                printf("\nInvalid move!\n");
-                printf("The number you entered is outside the allowed range.\n");
-                printf("Penalty applied: This mistake counts as TWO attempts!\n");
-                printf("Choose wisely - fewer attempts means a better score!\n");
-                c += 2;
-                continue ;
-
+            if (x == 1) {
+                continue ; // if user enters invalid then he got the penelty so ne future exesution in this itteration
+            }else if (x == 100) {
+                break ; // if user enters correct the the loop needs to end
             }
-
-            if (guessNumber > targetNumber) {
-
-                printf("\nToo high!\n");
-                printf("The number is smaller than your guess. Try a lower number.\n");
-                printf("Keep going! Fewer attempts = better score.\n");
-
-            }else if (guessNumber < targetNumber) {
-
-                printf("\nToo low!\n");
-                printf("The number is higher than your guess. Try a higher number.\n");
-                printf("You're getting closer! Fewer attempts = better score.\n");
-
-            }else if (guessNumber == targetNumber) {
-
-                printf("\n##-- Congratulations! --##\n");
-                printf("You guessed the number correctly!\n");
-                printf("It took you %d attempts.\n", c);
-                printf("Well done, champion!\n");
-
-                break ;
-
-            }
-
-            c++ ;
 
         }while (guessNumber != targetNumber) ;
 
@@ -326,4 +301,43 @@ void randomNumber (int *targetNumber , int rangeStart , int rangeEnd) {
 
 }
 
+int hint (int *guessNumber , int *targetNumber , int *c) {
 
+    if (*guessNumber < 0 || *guessNumber > 100) {
+
+        printf("\nInvalid move!\n");
+        printf("The number you entered is outside the allowed range.\n");
+        printf("Penalty applied: This mistake counts as TWO attempts!\n");
+        printf("Choose wisely - fewer attempts means a better score!\n");
+        *c += 2; // penelty for invalid move added
+        return 1 ; // its a signle that user entered an invalid move
+
+    }
+
+    if (*guessNumber > *targetNumber) {
+
+        printf("\nToo high!\n");
+        printf("The number is smaller than your guess. Try a lower number.\n");
+        printf("Keep going! Fewer attempts = better score.\n");
+        (*c)++ ; // keeping track of attemps
+        return 0 ; // its a signle that user entered a valid move
+
+    }else if (*guessNumber < *targetNumber) {
+
+        printf("\nToo low!\n");
+        printf("The number is higher than your guess. Try a higher number.\n");
+        printf("You're getting closer! Fewer attempts = better score.\n");
+        (*c)++ ; // keeping track of attemps
+        return 0 ; // its a signle that user entered a valid move
+
+    }else if (*guessNumber == *targetNumber) {
+
+        printf("\n##-- Congratulations! --##\n");
+        printf("You guessed the number correctly!\n");
+        printf("It took you %d attempts.\n", *c);
+        printf("Well done, champion!\n");
+        return 100 ; // its a signle that user entered the correct number
+
+    }
+
+}
