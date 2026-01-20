@@ -120,6 +120,21 @@ If you're learning C — this is exactly the kind of project that sharpens your 
 
 If you found this project helpful or inspiring:
 
+## 📜 License
+
+>This project is open for learning and experimentation.
+>You may modify, distribute, or expand it freely.
+
+## 👤 Author
+
+Developed by: Nikhil Kumawat
+<br>
+Language: C
+<br>
+Project: Number Guessing game
+
+>“Guess if u can.”
+
 - ⭐ Star the repository
 
 - 🍴 Fork it and improve it
